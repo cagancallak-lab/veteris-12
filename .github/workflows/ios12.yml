@@ -8,6 +8,14 @@ on:
 permissions:
   contents: write
 
+# Reproducible packaging: dpkg-deb uses SOURCE_DATE_EPOCH for archive
+# timestamps, so rebuilding the same commit produces byte-identical .debs.
+# Without this, every rebuild changed the hashes and Cydia clients holding a
+# cached Packages index hit "Hash Sum mismatch".
+env:
+  SOURCE_DATE_EPOCH: "1700000000"
+  TZ: UTC
+
 jobs:
   build:
     # Apple Silicon runner; macos-15 ships Xcode 16.4 by default, which still

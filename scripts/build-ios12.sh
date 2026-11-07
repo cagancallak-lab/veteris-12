@@ -7,6 +7,11 @@
 # Requires: Xcode (full install), scons, ldid; dpkg for the .deb step.
 set -euo pipefail
 
+# Reproducible package: fixed timestamp for dpkg-deb so rebuilds of the same
+# commit produce byte-identical .debs (Cydia verifies the index hashes).
+export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-1700000000}"
+export TZ="${TZ:-UTC}"
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
