@@ -1,0 +1,42 @@
+name: ios12-arm64
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, ios12-port]
+
+jobs:
+  build:
+    # Apple Silicon runner: matches the arm64/iOS 12 target and has Xcode 16.
+    runs-on: macos-14
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-path
+
+      - name: Install build tools
+        run: brew install scons ldid dpkg
+
+      - name: Cache OpenSSL/curl builds
+        uses: actions/cache@v4
+        with:
+          path: build/deps
+          key: deps-${{ runner.os }}-openssl-1.1.1w-curl-7.77.0
+
+      - name: Build arm64 .deb
+        run: |
+          chmod +x scripts/build-ios12.sh
+          ./scripts/build-ios12.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: veteris-ios12-arm64
+          path: |
+            xcbuild/*.deb
+            xcbuild/Veteris.app
+          if-no-files-found: error
