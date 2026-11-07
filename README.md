@@ -8,6 +8,10 @@
   Welcome back!
 </p>
 
+> **iOS 12 / arm64 port:** this fork rebuilds Veteris for 64-bit iOS 12 devices
+> and ships a Cydia repository. Build and install instructions:
+> [TUTORIAL.md](TUTORIAL.md). Technical notes: [PORTING-IOS12.md](PORTING-IOS12.md).
+
 <p align="center">
   <a href="https://repo.victorlobe.me">
     <img alt="Download" src="https://img.shields.io/badge/download-repo.victorlobe.me-blue?logo=apple" />

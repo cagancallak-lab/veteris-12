@@ -5,6 +5,9 @@ on:
   push:
     branches: [main, ios12-port]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     # Apple Silicon runner: matches the arm64/iOS 12 target and has Xcode 16.
@@ -32,7 +35,10 @@ jobs:
           chmod +x scripts/build-ios12.sh
           ./scripts/build-ios12.sh
 
-      - name: Upload artifact
+      - name: Build Cydia repository
+        run: python3 scripts/make_repo.py --output repo xcbuild/*.deb
+
+      - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
         with:
           name: veteris-ios12-arm64
@@ -40,3 +46,11 @@ jobs:
             xcbuild/*.deb
             xcbuild/Veteris.app
           if-no-files-found: error
+
+      - name: Publish Cydia repository to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./repo
+          publish_branch: gh-pages
+          force_orphan: true

@@ -103,6 +103,8 @@ mkdir -p libs/arm64
 cp -f "$PREFIX/lib/libssl.a" "$PREFIX/lib/libcrypto.a" "$PREFIX/lib/libcurl.a" libs/arm64/
 
 say "Building Veteris (arm64, iOS $MIN_IOS)"
+# Release build: no download-debug logging, no debug strings.
+export FINALPACKAGE=1
 # The tree still carries VERSION = "2.1.1" in SConstruct; pin the release the
 # port is based on so Info.plist and the .deb name are not stale.
 export VETERIS_MARKETING_VERSION="${VETERIS_MARKETING_VERSION:-4.0.3}"
