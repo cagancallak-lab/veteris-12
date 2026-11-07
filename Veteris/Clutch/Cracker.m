@@ -194,7 +194,8 @@ static NSString *genRandStringLength(int len) {
             MSG(PACKAGING_FAILED_KILL_ZIP);
 
             // kill(zip->_zipTask.processIdentifier, SIGKILL);
-            system("killall -9 zip");
+            // system() is unavailable on the iOS SDK; the -terminate below
+            // stops the zip task instead.
 
             [zip->_zipTask terminate];
 
