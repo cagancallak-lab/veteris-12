@@ -20,7 +20,6 @@ import gzip
 import hashlib
 import io
 import pathlib
-import shutil
 import sys
 import tarfile
 
@@ -124,15 +123,19 @@ def main() -> int:
         if not package or not version:
             print(f"skip {deb}: control has no Package/Version", file=sys.stderr)
             continue
-        target_name = f"{package}_{version}_iphoneos-arm.deb"
+        # Unique filename per build: GitHub Pages/CDN caches by URL, so a
+        # constant name can serve an old .deb against a fresh Packages index
+        # (Cydia "Hash Sum mismatch").
+        data = deb.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        target_name = f"{package}_{version}_{digest[:8]}_iphoneos-arm.deb"
         target = debs_dir / target_name
-        shutil.copyfile(deb, target)
-        data = target.read_bytes()
+        target.write_bytes(data)
         control["Filename"] = f"./debs/{target_name}"
         control["Size"] = str(len(data))
         control["MD5sum"] = hashlib.md5(data).hexdigest()
         control["SHA1"] = hashlib.sha1(data).hexdigest()
-        control["SHA256"] = hashlib.sha256(data).hexdigest()
+        control["SHA256"] = digest
         stanzas.append(format_stanza(list(control.items())))
         print(f"added {target_name} ({len(data)} bytes)")
 
