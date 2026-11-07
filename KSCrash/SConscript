@@ -7,7 +7,7 @@ Import("env")
 env.Prepend(LINKFLAGS=["-lc++", "-lc++abi"])
 env = env.Clone()
 
-srcs = (
+srcs = sorted(
     glob.glob("Source/KSCrash/**/**.m", recursive=True)
     + glob.glob("Source/KSCrash/**/**.mm", recursive=True)
     + glob.glob("Source/KSCrash/**/**.c", recursive=True)

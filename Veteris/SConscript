@@ -7,7 +7,9 @@ env = Environment()
 Import("env")
 env = env.Clone()
 
-srcs = (
+# Sort: glob() order is filesystem-dependent, and link order changes the
+# symbol table (and therefore the signed binary hash) between checkouts.
+srcs = sorted(
     glob.glob("./**/**.m", recursive=True)
     + glob.glob("./**/**.mm", recursive=True)
     + glob.glob("./**/**.c", recursive=True)

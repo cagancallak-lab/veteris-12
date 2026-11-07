@@ -7,7 +7,7 @@ Import("env")
 env.Prepend(CFLAGS=["-Inanopb"])
 env = env.Clone()
 
-srcs = (
+srcs = sorted(
     glob.glob("./*.c", recursive=True)
 )
 
