@@ -156,7 +156,6 @@ env = Environment(
         "-arch", arch,
         "-isysroot", sdkroot,
         "-miphoneos-version-min=" + min_version,
-        "-F" + join(sdkroot, "System/Library/PrivateFrameworks"),
         "-ObjC",
     ],
     CXXFLAGS=common_cxxflags,

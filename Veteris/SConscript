@@ -66,6 +66,15 @@ if os.path.isfile(os.path.join(lib_dir, "libz.a")):
 else:
     static_libs.append("-lz")
 
+# Xcode still ships the public frameworks but no longer ships stubs for the
+# private AppSupport/MobileInstallation/MobileCoreServices frameworks. These
+# .tbd files declare just the symbols Veteris uses and point at the real
+# on-device dylibs.
+private_libs = [
+    os.path.join(top_dir, "Veteris", "PrivateFrameworks", name)
+    for name in ("AppSupport.tbd", "MobileInstallation.tbd", "MobileCoreServices.tbd")
+]
+
 env.Append(
     CFLAGS=[
         "-include", "Veteris/Veteris-Prefix.pch",
@@ -112,14 +121,12 @@ env.Append(
         "-DHAVE_CERT",
         "-DVAPI",
     ],
-    LINKFLAGS=[
-        "-framework", "AppSupport",
+    LINKFLAGS=private_libs + [
         "-framework", "QuartzCore",
         "-framework", "CoreImage",
         "-framework", "Security",
         "-framework", "Foundation",
         "-framework", "UIKit",
-        "-framework", "MobileInstallation",
         "-framework", "CoreGraphics",
         "-framework", "MobileCoreServices",
         "-framework", "MessageUI",
