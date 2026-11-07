@@ -16,6 +16,17 @@
 #define CPU_SUBTYPE_ARM_V7S 11
 #endif
 
+// fork()/execl() are unavailable on the iOS SDK. The Crack tab is disabled on
+// arm64 (ApplicationLister returns nil), so the dump path is unreachable; make
+// it compile as a failing fork instead.
+#if defined(__arm64__)
+#define yz_fork() (-1)
+#define yz_execl(...) (-1)
+#else
+#define yz_fork() fork()
+#define yz_execl(...) execl(__VA_ARGS__)
+#endif
+
 @interface Binary () {
     NSString *oldbinaryPath;
     FILE *oldbinary;
@@ -686,14 +697,14 @@
     // begin the forking process
     MSG(DUMPING_FORKING);
 
-    if ((pid = fork()) == 0) {
+    if ((pid = yz_fork()) == 0) {
         // it worked! the magic is in allowing the process to trace before execl.
         // the process will be incapable of preventing itself from tracing
         // execl stops the process before this is capable
         // PT_DENY_ATTACH was never meant to be good security, only a minor roadblock
 
         ptrace(PT_TRACE_ME, 0, 0, 0);                  // trace
-        execl([originPath UTF8String], "", (char *)0); // import binary memory into executable space
+        yz_execl([originPath UTF8String], "", (char *)0); // import binary memory into executable space
 
         exit(2); // exit with err code 2 in case we could not import (this should not happen)
     } else if (pid < 0) {
@@ -1032,7 +1043,7 @@
     // VERBOSE("dumping binary: forking to begin tracing");
     MSG(DUMPING_FORKING);
 
-    if ((pid = fork()) == 0) {
+    if ((pid = yz_fork()) == 0) {
         // it worked! the magic is in allowing the process to trace before execl.
         // the process will be incapable of preventing itself from tracing
         // execl stops the process before this is capable
@@ -1041,7 +1052,7 @@
         MSG(DUMPING_FORK_SUCCESS);
 
         ptrace(PT_TRACE_ME, 0, 0, 0);                  // trace
-        execl([originPath UTF8String], "", (char *)0); // import binary memory into executable space
+        yz_execl([originPath UTF8String], "", (char *)0); // import binary memory into executable space
 
         exit(2); // exit with err code 2 in case we could not import (this should not happen)
     } else if (pid < 0) {
