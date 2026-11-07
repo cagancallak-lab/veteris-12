@@ -1,0 +1,20 @@
+Package: com.victorlobe.veteris
+Name: Veteris
+Version: 4.0.4
+Architecture: iphoneos-arm
+Depends: firmware (>= 12.0)
+Conflicts: com.ixmoe.1pwn.veteris, moe.yzu.veterishelper
+Replaces: com.ixmoe.1pwn.veteris, moe.yzu.veterishelper
+Section: Utilities
+Maintainer: Victor
+Author: Victor
+Description: Welcome back!
+Homepage: http://www.veteris.victorlobe.me/
+Depiction: http://repo.victorlobe.me/depictions/depiction.html?id=com.victorlobe.veteris
+Icon: file:///Applications/Veteris.app/AppIcon57x57@2x.png
+Compatibility: iOS 12.0+
+Filename: ./debs/com.victorlobe.veteris_4.0.4_4b0fe5c0_iphoneos-arm.deb
+Size: 4839720
+MD5sum: 17654311cf6946a88ca53cc6a9142728
+SHA1: 92067445ba00c0a2b8a08a91acc9e75f738ce482
+SHA256: 4b0fe5c005dc8832ceae53acc1beba335a96da2426b8339767a0c8d0e5c66132
