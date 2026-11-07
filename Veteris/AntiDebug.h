@@ -7,11 +7,20 @@ static
 __attribute__((used))
 __attribute__((always_inline))
 void asm_exit() {
+#if defined(__arm64__)
+    // arm64: exit(2) is syscall 1, number in x16.
+    __asm__ volatile (
+                      "mov x0, #0\n"
+                      "mov x16, #1\n"
+                      "svc #0x80\n"
+                      );
+#else
     __asm__ volatile (
                       "mov r0, #0\n"
                       "mov r12, #1\n"
                       "svc #80\n"
                       );
+#endif
 }
 
 // For debugger_ptrace. Ref: https://www.theiphonewiki.com/wiki/Bugging_Debuggers
