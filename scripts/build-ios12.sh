@@ -44,8 +44,8 @@ build_openssl() {
     mkdir -p "$SRC" "$PREFIX"
     cd "$SRC"
     if [ ! -f "openssl-$OPENSSL_VER.tar.gz" ]; then
-        curl -fL --retry 3 -o "openssl-$OPENSSL_VER.tar.gz" \
-            "https://github.com/openssl/openssl/releases/download/openssl-$OPENSSL_VER/openssl-$OPENSSL_VER.tar.gz"
+        curl -fL --retry 3 --retry-delay 2 -o "openssl-$OPENSSL_VER.tar.gz" \
+            "https://www.openssl.org/source/old/1.1.1/openssl-$OPENSSL_VER.tar.gz"
     fi
     [ -d "openssl-$OPENSSL_VER" ] || tar xzf "openssl-$OPENSSL_VER.tar.gz"
     cd "openssl-$OPENSSL_VER"
@@ -68,8 +68,8 @@ build_curl() {
     mkdir -p "$SRC"
     cd "$SRC"
     if [ ! -f "curl-$CURL_VER.tar.gz" ]; then
-        curl -fL --retry 3 -o "curl-$CURL_VER.tar.gz" \
-            "https://github.com/curl/curl/releases/download/curl-7_77_0/curl-$CURL_VER.tar.gz"
+        curl -fL --retry 3 --retry-delay 2 -o "curl-$CURL_VER.tar.gz" \
+            "https://curl.se/download/curl-$CURL_VER.tar.gz"
     fi
     [ -d "curl-$CURL_VER" ] || tar xzf "curl-$CURL_VER.tar.gz"
     cd "curl-$CURL_VER"

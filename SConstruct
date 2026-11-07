@@ -116,6 +116,14 @@ if not IS_MAC:
     common_cflags.extend(["-std=c11", "-Werror"])
 else:
     common_cflags.append("-std=c11")
+    # Xcode 16's clang promotes these to hard errors in C99+; the 2015-era
+    # sources (Clutch, minizip, fmemopen) rely on the old lenient defaults.
+    common_cflags.extend([
+        "-Wno-error=implicit-function-declaration",
+        "-Wno-error=incompatible-function-pointer-types",
+        "-Wno-error=incompatible-pointer-types",
+        "-Wno-error=int-conversion",
+    ])
 
 common_cxxflags = [
     "-isysroot", sdkroot,
