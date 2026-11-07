@@ -150,6 +150,14 @@ symbol with `dlsym`) is described in PORTING-IOS12.md §3.4.
 Pages is not enabled yet, the branch is not `gh-pages`, or the URL is missing a
 trailing slash.
 
+**Cydia shows "Hash Sum mismatch".**
+Cydia cached a `Packages` index from an older build while GitHub Pages was
+already serving the newer `.deb`. Refresh the source (Sources → pull down /
+Refresh) or remove and re-add it, then install. GitHub Pages caches files for up
+to 10 minutes, so wait and refresh again if it persists. The repository is
+published only on manual runs or `v*` tags now, which avoids this churn.
+As a fallback, install the `.deb` directly with Filza — no hash check is done.
+
 **The app installs but does not launch.**
 Check the crash log in `/var/mobile/Library/Logs/CrashReporter/` or run
 `idevicesyslog`. Most likely causes: signing/entitlements on iOS 12, or a

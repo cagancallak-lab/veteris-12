@@ -3,7 +3,7 @@ name: ios12-arm64
 on:
   workflow_dispatch:
   push:
-    branches: [main, ios12-port]
+    tags: ['v*']
 
 permissions:
   contents: write
