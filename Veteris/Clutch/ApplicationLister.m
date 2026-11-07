@@ -95,6 +95,13 @@ NSDictionary *get_application_list() {
 }
 
 NSArray *get_crackable_apps_list(BOOL sort) {
+#if defined(__arm64__)
+    // Clutch's cracker rewrites 32-bit mach_header/LC_SEGMENT structures and
+    // cannot process arm64 binaries. Returning nil keeps the Crack tab empty
+    // instead of handing it data that would crash the arm64 build.
+    (void)sort;
+    return nil;
+#else
     NSDictionary *installedApps = get_application_list();
     NSMutableArray *returnArray = [[NSMutableArray alloc] init];
     for (NSString *bundleID in [installedApps allKeys]) {
@@ -170,6 +177,7 @@ NSArray *get_crackable_apps_list(BOOL sort) {
     }
 
     return (NSArray *)returnArray;
+#endif
 }
 
 @implementation ApplicationLister

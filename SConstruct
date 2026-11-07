@@ -18,11 +18,30 @@ import glob
 import os
 import platform
 import shutil
+import subprocess
 import sys
 
 PROJECT_DIR = Dir("#").abspath
 DEFAULT_SDK = normpath(join(PROJECT_DIR, "..", "SDKs", "iPhoneOS8.4.sdk"))
 IS_MAC = platform.system() == "Darwin"
+
+
+def detect_sdk():
+    """Use the installed iPhoneOS SDK on a Mac unless SDKROOT was supplied."""
+    if "SDKROOT" in ARGUMENTS:
+        return normpath(ARGUMENTS["SDKROOT"])
+    if IS_MAC:
+        try:
+            sdk = subprocess.check_output(
+                ["xcrun", "--sdk", "iphoneos", "--show-sdk-path"],
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            ).strip()
+            if sdk and os.path.isdir(sdk):
+                return sdk
+        except Exception:
+            pass
+    return DEFAULT_SDK
 
 
 def find_ldid():
@@ -37,8 +56,10 @@ def find_ldid():
 
 vars = Variables(None, ARGUMENTS)
 vars.Add(PathVariable("TOOLING_PATH", "Toolchain bin dir", "/usr/bin", PathVariable.PathIsDir))
-vars.Add(PathVariable("SDKROOT", "iOS SDK root", DEFAULT_SDK, PathVariable.PathIsDir))
+vars.Add(PathVariable("SDKROOT", "iOS SDK root", detect_sdk(), PathVariable.PathIsDir))
 vars.Add(BoolVariable("debug", "debug build", False))
+vars.Add(EnumVariable("arch", "target architecture", "armv7",
+                      allowed_values=["armv7", "arm64"]))
 vars.Add(EnumVariable("device", "install target", "default",
                       allowed_values=["default", "ios5", "ios6", "ios7"]))
 
@@ -48,10 +69,14 @@ if not IS_MAC and "TOOLING_PATH" not in vars.args:
     print(vars.GenerateHelpText(env))
     sys.exit(1)
 
-sdkroot = normpath(vars.args.get("SDKROOT", DEFAULT_SDK))
+sdkroot = normpath(vars.args.get("SDKROOT", detect_sdk()))
 tooling_path = vars.args.get("TOOLING_PATH", "/usr/bin")
-arch = "armv7"
-min_version = "5.0"
+arch = vars.args.get("arch", "armv7")
+if arch not in ("armv7", "arm64"):
+    raise SystemExit("unsupported arch %r (expected armv7 or arm64)" % arch)
+# armv7 keeps the original iOS 5 deployment target; arm64 starts at iOS 12
+# because iOS 12 cannot load 32-bit code at all. Override with min_version=...
+min_version = vars.args.get("min_version") or ("12.0" if arch == "arm64" else "5.0")
 
 if IS_MAC:
     cc = "xcrun clang"
@@ -102,10 +127,8 @@ common_cxxflags = [
     "-Wno-deprecated-declarations",
     "-std=c++11",
 ]
-if IS_MAC:
-    common_cxxflags.append("-stdlib=libstdc++")
-else:
-    common_cxxflags.append("-stdlib=libc++")
+# Xcode 10+ no longer ships libstdc++; libc++ is required for arm64 anyway.
+common_cxxflags.append("-stdlib=libc++")
 if not IS_MAC:
     common_cxxflags.append("-Werror")
 
@@ -132,12 +155,14 @@ env = Environment(
     ENV=env_vars,
 )
 env["SDKROOT"] = sdkroot
+env["ARCH"] = arch
 env.Help(vars.GenerateHelpText(env))
 env.AppendENVPath("PATH", os.getenv("PATH"))
 env.Clean(".", "xcbuild")
 env.Clean(".", "Veteris/xcbuild")
 
-print("SCons Veteris: platform=%s SDKROOT=%s CC=%s" % (platform.system(), sdkroot, cc))
+print("SCons Veteris: platform=%s arch=%s min=%s SDKROOT=%s CC=%s"
+      % (platform.system(), arch, min_version, sdkroot, cc))
 
 
 def disable_arc(env, srcs, src_file_name):
@@ -335,7 +360,7 @@ if shutil.which("sshpass"):
     )
     env.AlwaysBuild(ios_install)
 
-if shutil.which("dpkg-deb") and not IS_MAC:
+if shutil.which("dpkg-deb"):
     deb_pkg = env.Command(
         "xcbuild/Veteris-v%s.deb" % PACKAGE_VERSION,
         bundle_stamp,

@@ -43,13 +43,23 @@ for i in srcs:
         srcs_to_remove_idx.append(srcs.index(i))
 srcs = [srcs[i] for i in range(len(srcs)) if i not in srcs_to_remove_idx]
 
+arch = env.get("ARCH", "armv7")
+lib_dir = os.path.join("libs", arch)
+if not os.path.isdir(lib_dir):
+    if arch == "arm64":
+        raise SystemExit(
+            "arm64 static libraries are missing: build libcurl/libssl/libcrypto "
+            "for arm64 into libs/arm64 (see PORTING-IOS12.md)"
+        )
+    lib_dir = "libs"
+
 static_libs = [
-    "libs/libssl.a",
-    "libs/libcurl.a",
-    "libs/libcrypto.a",
+    os.path.join(lib_dir, "libssl.a"),
+    os.path.join(lib_dir, "libcurl.a"),
+    os.path.join(lib_dir, "libcrypto.a"),
 ]
-if os.path.isfile("libs/libz.a"):
-    static_libs.insert(0, "libs/libz.a")
+if os.path.isfile(os.path.join(lib_dir, "libz.a")):
+    static_libs.insert(0, os.path.join(lib_dir, "libz.a"))
 else:
     static_libs.append("-lz")
 
