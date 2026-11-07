@@ -43,15 +43,18 @@ for i in srcs:
         srcs_to_remove_idx.append(srcs.index(i))
 srcs = [srcs[i] for i in range(len(srcs)) if i not in srcs_to_remove_idx]
 
+# SCons evaluates this file with cwd = Veteris/, so resolve the static
+# libraries against the project root explicitly.
+top_dir = Dir("#").abspath
 arch = env.get("ARCH", "armv7")
-lib_dir = os.path.join("libs", arch)
+lib_dir = os.path.join(top_dir, "libs", arch)
 if not os.path.isdir(lib_dir):
     if arch == "arm64":
         raise SystemExit(
             "arm64 static libraries are missing: build libcurl/libssl/libcrypto "
             "for arm64 into libs/arm64 (see PORTING-IOS12.md)"
         )
-    lib_dir = "libs"
+    lib_dir = os.path.join(top_dir, "libs")
 
 static_libs = [
     os.path.join(lib_dir, "libssl.a"),
