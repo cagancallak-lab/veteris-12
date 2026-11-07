@@ -107,7 +107,12 @@ bool debugger_sysctl(void)
 NS_INLINE
 void root_anti_debugging()
 {
-    
+#if defined(__arm64__)
+    // On iOS 12 the sysctl() probe below fails inside the app sandbox and
+    // calls asm_exit(), which makes the app quit silently at launch. The
+    // anti-debugging checks are 32-bit era and unnecessary for this build.
+    return;
+#else
     {
         setuid(0);
         setgid(0);
@@ -150,6 +155,7 @@ void root_anti_debugging()
     //     "mov r12, #26\n"
     //     "svc #80\n"
     // );
+#endif
 }
 
 #endif  /* MyAntiDebugging_h */

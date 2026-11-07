@@ -112,9 +112,9 @@ say "Building Veteris (arm64, iOS $MIN_IOS)"
 export FINALPACKAGE=1
 # The tree still carries VERSION = "2.1.1" in SConstruct; pin the release the
 # port is based on so Info.plist and the .deb name are not stale.
-export VETERIS_MARKETING_VERSION="${VETERIS_MARKETING_VERSION:-4.0.3}"
-export VETERIS_BUILD_VERSION="${VETERIS_BUILD_VERSION:-4.0.3}"
-export VETERIS_PACKAGE_VERSION="${VETERIS_PACKAGE_VERSION:-4.0.3}"
+export VETERIS_MARKETING_VERSION="${VETERIS_MARKETING_VERSION:-4.0.4}"
+export VETERIS_BUILD_VERSION="${VETERIS_BUILD_VERSION:-4.0.4}"
+export VETERIS_PACKAGE_VERSION="${VETERIS_PACKAGE_VERSION:-4.0.4}"
 scons -j"$JOBS" arch="$ARCH" min_version="$MIN_IOS" SDKROOT="$SDK" app
 
 APP="xcbuild/Veteris.app"

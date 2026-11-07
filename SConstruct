@@ -385,6 +385,8 @@ if shutil.which("dpkg-deb"):
             "cp -r xcbuild/Veteris.app xcbuild/Veteris-deb/Applications/Veteris.app",
             "cp deb-stuff/control xcbuild/Veteris-deb/DEBIAN/control",
             "echo Version: %s >> xcbuild/Veteris-deb/DEBIAN/control" % PACKAGE_VERSION,
+            "cp deb-stuff/postinst xcbuild/Veteris-deb/DEBIAN/postinst",
+            "chmod 755 xcbuild/Veteris-deb/DEBIAN/postinst",
             "dpkg-deb -b -Zgzip --root-owner-group xcbuild/Veteris-deb $TARGET",
         ],
     )
