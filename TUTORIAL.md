@@ -60,21 +60,18 @@ The workflow also produces a Cydia repository (`repo/`) and publishes it to the
 
 ---
 
-## 3. Turn on the Cydia repository (GitHub Pages)
+## 3. Cydia repository (GitHub Pages)
 
-Do this once, after the first successful build (the `gh-pages` branch only
-exists then):
+This is already enabled for this repository: Pages serves the `gh-pages`
+branch, and <https://cagancallak-lab.github.io/veteris-12/Packages> returns the
+package index.
+
+If you fork this repository and the URL 404s, enable it once:
 
 1. Repository **Settings → Pages**.
 2. **Build and deployment → Source: Deploy from a branch**.
 3. Branch: **gh-pages**, folder: **/ (root)** → **Save**.
-4. Wait 1–2 minutes, then check:
-
-   <https://cagancallak-lab.github.io/veteris-12/>
-
-   You should see the landing page, and
-   <https://cagancallak-lab.github.io/veteris-12/Packages> should list
-   `Package: com.victorlobe.veteris`.
+4. Wait 1–2 minutes, then check the URL above.
 
 ---
 

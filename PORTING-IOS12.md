@@ -1,8 +1,13 @@
 # Porting Veteris to iOS 12 (arm64)
 
-Status: **build scaffolding only.** The shipped app is 32-bit; iOS 12 cannot run
-it at all. This document records the evidence, the changes made in this tree,
-and the work that still has to happen on a Mac before a working `.deb` exists.
+Status: **arm64 build works on CI; device runtime untested.** The shipped app is
+32-bit; iOS 12 cannot run it at all. This document records the evidence, the
+changes made in this tree, and the verification steps.
+
+The current build ([run 42404479578](https://github.com/cagancallak-lab/veteris-12/actions/runs/42404479578))
+produces a thin **arm64** executable and a `Veteris-v4.0.3.deb` with
+`Depends: firmware (>= 12.0)`. The Cydia repository is published at
+<https://cagancallak-lab.github.io/veteris-12/>.
 
 ## 1. Why a "port" is required
 
@@ -177,16 +182,22 @@ used on macOS (`brew install ldid`).
 
 ## 6. What is verified here, and what is not
 
-Verified on this machine (Windows, no iOS toolchain):
+Verified:
 
-- The 4.0.3 binary is thin armv7 (Mach-O header parse + REA `open_binary`
-  reporting `format=mach-o, architecture=arm`).
-- The built `Info.plist` declares `armv7` and the app has no arm64 slice.
-- `SConstruct` and `Veteris/SConscript` parse (`ast.parse`), the plist parses.
+- Upstream 4.0.3 is thin armv7 (Mach-O header parse + REA `open_binary`
+  reporting `format=mach-o, architecture=arm`), so iOS 12 cannot run it.
+- `scripts/build-ios12.sh` runs end-to-end on GitHub's `macos-15` runner
+  (Xcode 16.4, iOS 18.5 SDK): OpenSSL 1.1.1w + curl 7.77.0 cross-built for
+  arm64, app compiled, linked against the local private-framework stubs,
+  signed with `ldid`, packaged with `dpkg-deb`.
+- The produced `Veteris.app/Veteris` is a thin **arm64** 64-bit `MH_EXECUTE`
+  (`cputype=16777228`, `bits=64`).
+- The produced `.deb` control says `Depends: firmware (>= 12.0)` and
+  `Version: 4.0.3`.
+- The Cydia repository is live: `Packages` returns HTTP 200 and
+  `debs/com.victorlobe.veteris_4.0.3_iphoneos-arm.deb` downloads with the
+  advertised size.
 
-**Not verified:** compilation, linking, signing, installation and runtime
-behaviour. None of that can be executed without macOS/Xcode and an iOS 12
-device, so treat every line above as a reviewed change, not a tested port.
-`scripts/build-ios12.sh` is likewise written against the documented OpenSSL
-1.1.1w / curl 7.77.0 cross-build recipes but has not been executed; expect to
-iterate on the first run (report the failing step).
+**Not verified:** launching and using the app on an iOS 12 device (signing
+acceptance, private frameworks at runtime, networking, IPA installation).
+Those need the actual device; see the checklist above.
