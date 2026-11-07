@@ -102,6 +102,12 @@ else:
         "LD_LIBRARY_PATH": os.environ.get("LD_LIBRARY_PATH", ""),
     }
 
+# SCons only exports ENV to spawned commands, so reproducible-build variables
+# must be forwarded explicitly (dpkg-deb reads SOURCE_DATE_EPOCH).
+for _name in ("SOURCE_DATE_EPOCH", "TZ"):
+    if os.environ.get(_name):
+        env_vars[_name] = os.environ[_name]
+
 common_cflags = [
     "-isysroot", sdkroot,
     "-arch", arch,
@@ -156,6 +162,7 @@ env = Environment(
         "-arch", arch,
         "-isysroot", sdkroot,
         "-miphoneos-version-min=" + min_version,
+        "-Wl,-no_uuid",
         "-ObjC",
     ],
     CXXFLAGS=common_cxxflags,
