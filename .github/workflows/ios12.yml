@@ -10,8 +10,9 @@ permissions:
 
 jobs:
   build:
-    # Apple Silicon runner: matches the arm64/iOS 12 target and has Xcode 16.
-    runs-on: macos-14
+    # Apple Silicon runner; macos-15 ships Xcode 16.4 by default, which still
+    # accepts a 12.0 deployment target. (macos-14 was retired on 2026-11-02.)
+    runs-on: macos-15
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
