@@ -6,10 +6,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(SuggestionMsg, SuggestionMsg, AUTO)
+PB_BIND(SuggestionMsg, SuggestionMsg, 2)
 
 
-PB_BIND(SuggestionsMsg, SuggestionsMsg, AUTO)
+PB_BIND(SuggestionsMsg, SuggestionsMsg, 2)
 
 
 

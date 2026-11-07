@@ -6,10 +6,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(CrashReportEntry, CrashReportEntry, AUTO)
+PB_BIND(CrashReportEntry, CrashReportEntry, 2)
 
 
-PB_BIND(CrashReportMsg, CrashReportMsg, AUTO)
+PB_BIND(CrashReportMsg, CrashReportMsg, 2)
 
 
 

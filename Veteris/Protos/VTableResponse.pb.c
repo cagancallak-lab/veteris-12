@@ -6,10 +6,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(VTableEntryMsg, VTableEntryMsg, AUTO)
+PB_BIND(VTableEntryMsg, VTableEntryMsg, 2)
 
 
-PB_BIND(VTableResponseMsg, VTableResponseMsg, AUTO)
+PB_BIND(VTableResponseMsg, VTableResponseMsg, 2)
 
 
 

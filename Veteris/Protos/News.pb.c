@@ -6,13 +6,13 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(NewsEntry, NewsEntry, AUTO)
+PB_BIND(NewsEntry, NewsEntry, 2)
 
 
-PB_BIND(NewsMsg, NewsMsg, AUTO)
+PB_BIND(NewsMsg, NewsMsg, 2)
 
 
-PB_BIND(Changelog, Changelog, AUTO)
+PB_BIND(Changelog, Changelog, 2)
 
 
 

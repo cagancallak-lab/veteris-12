@@ -7,16 +7,16 @@
 #endif
 
 /* Descriptor bindings are rebuilt from the hand-maintained App.pb.h schema. */
-PB_BIND(VersionMsg, VersionMsg, AUTO)
+PB_BIND(VersionMsg, VersionMsg, 2)
 
 
-PB_BIND(InfoFieldMsg, InfoFieldMsg, AUTO)
+PB_BIND(InfoFieldMsg, InfoFieldMsg, 2)
 
 
-PB_BIND(InfoBlockMsg, InfoBlockMsg, AUTO)
+PB_BIND(InfoBlockMsg, InfoBlockMsg, 2)
 
 
-PB_BIND(ScreenshotMsg, ScreenshotMsg, AUTO)
+PB_BIND(ScreenshotMsg, ScreenshotMsg, 2)
 
 
-PB_BIND(AppMsg, AppMsg, AUTO)
+PB_BIND(AppMsg, AppMsg, 2)

@@ -6,10 +6,10 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(CategoryMsg, CategoryMsg, AUTO)
+PB_BIND(CategoryMsg, CategoryMsg, 2)
 
 
-PB_BIND(CategoriesMsg, CategoriesMsg, AUTO)
+PB_BIND(CategoriesMsg, CategoriesMsg, 2)
 
 
 
